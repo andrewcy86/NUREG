@@ -5,3 +5,5 @@
 3) Run footnote.py to generate footnote_output.csv and remove filenames
 4) Run clenaup.py to map all the old url's to the new filenames.
    TODO: Cleanup footnote links to map to the footnote solution that will be developed.
+   
+![image](https://github.com/andrewcy86/NUREG/assets/5041903/6598719a-9a08-41e4-8e02-1875856c1638)
