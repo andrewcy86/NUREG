@@ -28,32 +28,7 @@ def find_matching_term(terms, string):
         if string.lower().startswith(term.lower()):
             return term
     return None
-"""    
-def determine_filename(title):
-    if "Section" in title:
-        new_filename_part = title.split('.')[0]
-        return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"
-    elif "Task" in title:
-        new_filename_part = title.split(':')[0]
-        return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"
-    elif "Item" in title:
-        new_filename_part = title.split(':')[0]
-        return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"
-    elif "Appendix" in title:
-        new_filename_part = title.split('.')[0]
-        return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"
-    elif "Issue" in title:
-        new_filename_part = title.split(':')[0]
-        return new_filename_part.replace(" ", "_").replace(".", "_")  + ".htm"
-    elif "TABLE" in title:
-        new_filename_part = title.split(':')[0]
-        return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"
-    elif "Footnote" in title:
-        new_filename_part = title.split(":")[1].strip().encode('ascii', 'ignore').decode("utf-8")
-        return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"                                      
-    else: 
-        return title + ".htm"
- """
+
 def rename_files(folder_path):
     with open(csv_filename_mapping, mode='w', newline='', encoding='utf-8-sig') as file:
         writer = csv.writer(file, delimiter=',')
