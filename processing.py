@@ -5,25 +5,25 @@ csv_filename_mapping = "filename_mapping.csv"
 folder_path = "C:/Users/admin/Documents/Python Scripts/NUREG/testing/"
 
 def determine_filename(title):
-    if title.startswith('Section'): 
+    if "Section" in title:
         new_filename_part = title.split('.')[0]
         return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"
-    elif title.startswith('Task'):
+    elif "Task" in title:
         new_filename_part = title.split(':')[0]
         return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"
-    elif title.startswith('Item'):
+    elif "Item" in title:
         new_filename_part = title.split(':')[0]
         return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"
-    elif title.startswith('Issue'):
+    elif "Appendix" in title:
+        new_filename_part = title.split('.')[0]
+        return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"
+    elif "Issue" in title:
         new_filename_part = title.split(':')[0]
         return new_filename_part.replace(" ", "_").replace(".", "_")  + ".htm"
-    elif title.startswith('TABLE'):
+    elif "TABLE" in title:
         new_filename_part = title.split(':')[0]
         return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"
-    elif title.startswith('Appendix'):
-        new_filename_part = title.split('.')[0]
-        return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"
-    elif title.startswith('Footnote'):
+    elif "Footnote" in title:
         new_filename_part = title.split(":")[1].strip().encode('ascii', 'ignore').decode("utf-8")
         return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"                                      
     else: 
