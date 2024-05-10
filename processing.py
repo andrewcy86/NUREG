@@ -2,31 +2,32 @@ import os
 from bs4 import BeautifulSoup
 import csv
 csv_filename_mapping = "filename_mapping.csv"
+folder_path = "C:/Users/admin/Documents/Python Scripts/NUREG/testing/"
 
 def determine_filename(title):
-    if "Section" in title.split('.')[0]: 
-        new_filename_part = ''
-        return new_filename_part + ".htm"
-    elif "Task" in title:
-        new_filename_part = title.split(':')[0]
-        return new_filename_part + ".htm"
-    elif "Item" in title:
-        new_filename_part = title.split(':')[0]
-        return new_filename_part + ".htm"
-    elif "Issue" in title:
-        new_filename_part = title.split(':')[0]
-        return new_filename_part  + ".htm"
-    elif "TABLE" in title:
-        new_filename_part = title.split(':')[0]
-        return new_filename_part + ".htm"
-    elif "Appendix" in title:
+    if title.startswith('Section'): 
         new_filename_part = title.split('.')[0]
-        return new_filename_part + ".htm"
-    elif "Footnote" in title:
-        new_filename_part = title.rsplit(': ', 1)
-        return new_filename_part + ".htm"                                      
+        return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"
+    elif title.startswith('Task'):
+        new_filename_part = title.split(':')[0]
+        return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"
+    elif title.startswith('Item'):
+        new_filename_part = title.split(':')[0]
+        return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"
+    elif title.startswith('Issue'):
+        new_filename_part = title.split(':')[0]
+        return new_filename_part.replace(" ", "_").replace(".", "_")  + ".htm"
+    elif title.startswith('TABLE'):
+        new_filename_part = title.split(':')[0]
+        return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"
+    elif title.startswith('Appendix'):
+        new_filename_part = title.split('.')[0]
+        return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"
+    elif title.startswith('Footnote'):
+        new_filename_part = title.split(":")[1].strip().encode('ascii', 'ignore').decode("utf-8")
+        return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"                                      
     else: 
-        return title + "_" + ".htm"
+        return title + ".htm"
 
 def rename_files(folder_path):
     with open(csv_filename_mapping, mode='w', newline='', encoding='utf-8-sig') as file:
@@ -41,24 +42,17 @@ def rename_files(folder_path):
                     h3_tag = soup.find("h3")
 
                     if h4_tag:
-                        new_filename = ''
-                        title = h4_tag.text.strip().replace(" ", "_").replace(".", "_")
-
-                        old_filename = os.path.splitext(filename)[0]
-                        new_filename = determine_filename(title)
-                        #new_filepath = os.path.join(folder_path, new_filename)
-                        #os.rename(filepath, new_filepath)
-                        print(f"Renamed {filename} to {new_filename}")
-                        writer.writerow([filename, new_filename])
+                        title = h4_tag.text.strip()  
                     else:
-                        print(f"No <h4> tag found in {filename}")
-                        if h3_tag:
-                            new_filename = determine_filename(title)
-                            #new_filepath = os.path.join(folder_path, new_filename)
-                            #os.rename(filepath, new_filepath)
-                            print(f"Renamed {filename} to {new_filename}")
-                            writer.writerow([filename, new_filename])
-
+                        title = h3_tag.text.strip()  
+   
+                    new_filename = determine_filename(title)
+                    new_filepath = os.path.join(folder_path, new_filename)
+                    file.close()
+                    os.rename(filepath, new_filepath)
+                    print(f"Renamed {filename} to {new_filename}")
+                    writer.writerow([filename, new_filename])
+                   
 def remove_hr_image(folder_path):
     with open('removed_images.txt', 'w') as rmfile:
         for filename in os.listdir(folder_path):
@@ -86,6 +80,7 @@ def remove_hr_image(folder_path):
                                 # Alter HTML file to see the changes done
                                 with open(filepath, "wb") as f_output:
                                     f_output.write(soup.prettify("utf-8"))
+                                    file.close()
                             else:
                                 print("No image tag found under p tag.")
                         else:
@@ -109,6 +104,7 @@ def remove_hr_image(folder_path):
                                 # Alter HTML file to see the changes done
                                 with open(filepath, "wb") as f_output:
                                     f_output.write(soup.prettify("utf-8"))
+                                    file.close()
                             else:
                                 print("No image tag found under p tag.")
                         else:
@@ -116,6 +112,20 @@ def remove_hr_image(folder_path):
                     else:
                         print("No h3 tag found.")
 
-folder_path = "C:/Users/admin/Documents/Python Scripts/NUREG/testing/"
+def delete_files_from_list(file_list_path):
+
+    flist = open(file_list_path)
+
+    for f in flist:
+        fname = f.rstrip()
+        if os.path.isfile(folder_path+fname):
+            os.remove(folder_path+fname)
+            print("File Delete: " + fname)
+    
+    flist.close()
+ 
 rename_files(folder_path)
 remove_hr_image(folder_path)
+
+file_list_path = "removed_images.txt"
+delete_files_from_list(file_list_path)
