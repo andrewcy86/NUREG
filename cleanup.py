@@ -38,7 +38,7 @@ def process_html_files(folder_path, csv_file):
             replace_links_in_html(html_file, csv_file)
             print(filename)
 
-# Example usage:
+# Change Directory Path
 directory = "C:/Users/admin/Documents/Python Scripts/NUREG/testing/"
 csv_file = "C:/Users/admin/Documents/Python Scripts/NUREG/filename_mapping.csv"
 
