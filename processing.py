@@ -4,6 +4,31 @@ import csv
 csv_filename_mapping = "filename_mapping.csv"
 folder_path = "C:/Users/admin/Documents/Python Scripts/NUREG/testing/"
 
+def extract_value_from_string(string, term):
+    delimiter = ''
+    if term.lower() == 'section' or term.lower() == 'appendix':
+        delimiter = '.'
+    elif term.lower() == 'task' or term.lower() == 'item' or term.lower() == 'issue' or term.lower() == 'table' or term.lower() == 'nureg-0933: footnote':
+        delimiter = ':'
+    else:
+        return None
+
+    index = string.lower().find(term.lower())
+    if index != -1:
+        if term.lower() == 'nureg-0933: footnote':
+            value = string.split(":")[1].strip().encode('ascii', 'ignore').decode("utf-8")
+        else:
+            value = string.split(delimiter)[0].strip()
+        return value.replace(" ", "_").replace(".", "_") + ".htm"
+    else:
+        return None
+    
+def find_matching_term(terms, string):
+    for term in terms:
+        if string.lower().startswith(term.lower()):
+            return term
+    return None
+"""    
 def determine_filename(title):
     if "Section" in title:
         new_filename_part = title.split('.')[0]
@@ -28,7 +53,7 @@ def determine_filename(title):
         return new_filename_part.replace(" ", "_").replace(".", "_") + ".htm"                                      
     else: 
         return title + ".htm"
-
+ """
 def rename_files(folder_path):
     with open(csv_filename_mapping, mode='w', newline='', encoding='utf-8-sig') as file:
         writer = csv.writer(file, delimiter=',')
@@ -42,11 +67,19 @@ def rename_files(folder_path):
                     h3_tag = soup.find("h3")
 
                     if h4_tag:
-                        title = h4_tag.text.strip()  
+                        title = h4_tag.text.strip().encode('ascii', 'ignore').decode("utf-8")
                     else:
-                        title = h3_tag.text.strip()  
+                        title = h3_tag.text.strip().encode('ascii', 'ignore').decode("utf-8")
    
-                    new_filename = determine_filename(title)
+                    terms = ['Section', 'Task', 'Item', 'Issue', 'TABLE', 'Appendix', 'NUREG-0933: Footnote']
+
+                    matching_term = find_matching_term(terms, title)
+
+                    if matching_term:
+                        new_filename = extract_value_from_string(title, matching_term)
+                    else:
+                        new_filename = title.replace(" ( )", "").replace(" ", "_").replace(".", "_") + ".htm"
+
                     new_filepath = os.path.join(folder_path, new_filename)
                     file.close()
                     os.rename(filepath, new_filepath)
