@@ -2,6 +2,8 @@ import os
 from bs4 import BeautifulSoup
 import csv
 csv_filename_mapping = "filename_mapping.csv"
+
+# Change Directory Path
 folder_path = "C:/Users/admin/Documents/Python Scripts/NUREG/testing/"
 
 def extract_value_from_string(string, term):
