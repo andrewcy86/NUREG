@@ -69,7 +69,7 @@ def remove_files_with_footnote(directory):
             except Exception as e:
                 print(f"Failed to delete {file_path}: {str(e)}")
 
-# Example usage:
+# Change Directory Path
 directory = "C:/Users/admin/Documents/Python Scripts/NUREG/testing/"
 process_files(directory)
 remove_files_with_footnote(directory)
