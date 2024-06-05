@@ -1,0 +1,17 @@
+Sub Demo()
+Application.ScreenUpdating = False
+Dim i As Long, Rng As Range, FtNt As Footnote
+With ActiveDocument
+  For i = .Hyperlinks.Count To 1 Step -1
+    Set Rng = .Hyperlinks(i).Range
+    Rng.Collapse wdCollapseStart
+    Set FtNt = .Footnotes.Add(Rng)
+    FtNt.Range.FormattedText = .Hyperlinks(i).Range.FormattedText
+    .Hyperlinks(i).Range.Delete
+    With FtNt.Range.Hyperlinks(1)
+      .TextToDisplay = .Address
+    End With
+  Next
+End With
+Application.ScreenUpdating = True
+End Sub
