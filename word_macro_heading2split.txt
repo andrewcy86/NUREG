@@ -1,0 +1,59 @@
+Sub SplitDocumentByHeading2()
+    Dim doc As Document
+    Dim sec As Section
+    Dim para As Paragraph
+    Dim startRange As Range
+    Dim endRange As Range
+    Dim newDoc As Document
+    Dim fileName As String
+    Dim headingCount As Integer
+
+    ' Set the document to the active document
+    Set doc = ActiveDocument
+
+    ' Get the path of the current document
+    filePath = doc.Path & "\"
+    
+    For Each para In doc.Paragraphs
+        If para.Style = "Heading 2" Then
+            headingCount = headingCount + 1
+            
+            If headingCount = 1 Then
+                ' First heading - define the start range
+                Set startRange = para.Range
+            Else
+                ' Create new document for the content between headings
+                Set endRange = para.Range
+                endRange.Start = startRange.Start
+                endRange.End = para.Range.Start - 1
+                
+                Set newDoc = Documents.Add
+                newDoc.Range.FormattedText = endRange.FormattedText
+                
+                ' Save new document as HTML
+                fileName = "Part_" & headingCount - 1 & ".html"
+                newDoc.SaveAs2 fileName:=filePath & fileName, FileFormat:=wdFormatFilteredHTML
+                newDoc.Close False
+                
+                ' Update start range for the next section
+                Set startRange = para.Range
+            End If
+        End If
+    Next para
+    
+    ' Handle last section
+    If Not startRange Is Nothing Then
+        Set endRange = doc.Content
+        endRange.Start = startRange.Start
+        
+        Set newDoc = Documents.Add
+        newDoc.Range.FormattedText = endRange.FormattedText
+        
+        ' Save new document as HTML
+        fileName = "Part_" & headingCount & ".html"
+        newDoc.SaveAs2 fileName:=filePath & fileName, FileFormat:=wdFormatFilteredHTML
+        newDoc.Close False
+    End If
+    
+    MsgBox "Document split into HTML files by Heading 2."
+End Sub
